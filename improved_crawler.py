@@ -104,14 +104,14 @@ class ImprovedArticleCrawler:
             self.setup_driver()
             self.request_count = 0
         
-        # 根据请求数量动态调整延迟 - 增强反爬虫延迟
+        # 根据请求数量动态调整延迟 - 1分钟基础间隔
         if self.request_count < 10:
-            delay = random.uniform(15, 25)
+            delay = 60  # 1分钟
         elif self.request_count < 25:
-            delay = random.uniform(25, 40)
+            delay = 70  # 70 秒
         else:
-            delay = random.uniform(40, 60)
-        
+            delay = 80  # 80 秒
+
         logger.info(f"等待 {delay:.1f} 秒 (请求数: {self.request_count})")
         time.sleep(delay)
     
@@ -139,12 +139,6 @@ class ImprovedArticleCrawler:
                 
                 # 检查页面标题是否包含错误信息
                 page_title = self.driver.title
-                if any(error in page_title.lower() for error in ['403', '404', '500', 'forbidden', 'error']):
-                    logger.warning(f"检测到错误页面标题: {page_title}")
-                    if retry < max_retries - 1:
-                        logger.info(f"等待更长时间后重试...")
-                        time.sleep(random.uniform(60, 120))
-                        continue
                 
                 # 获取页面HTML
                 html_content = self.driver.page_source

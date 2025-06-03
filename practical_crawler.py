@@ -48,8 +48,8 @@ class PracticalCrawler:
         """智能延迟策略"""
         self.request_count += 1
         
-        # 基础延迟：30-60秒（增强生产环境设置）
-        base_delay = random.uniform(30, 60)
+        # 基础延迟：75秒
+        base_delay = 75
         
         # 每10个请求后增加额外延迟 - 增强版
         if self.request_count % 10 == 0:
@@ -182,7 +182,7 @@ class PracticalCrawler:
         # 检查内容质量
         if (content.get('title') == '491 Forbidden' or 
             content.get('content') == '无内容' or
-            len(content.get('content', '')) < 50):
+            len(content.get('content', '')) < 5):
             logger.warning(f"获取的内容质量不佳: {content}")
             return False
         
