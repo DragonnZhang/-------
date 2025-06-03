@@ -6,8 +6,11 @@
 """
 
 import json
-import time
-import random
+import ti    print(f"⚙️ 配置:")
+    print(f"   - 批次大小: {batch_size} 篇/批次")
+    print(f"   - 文章间延迟: 30-60秒 (增强版)")
+    print(f"   - 批次间延迟: 120-240秒 (增强版)")
+    print(f"   - 预计总时间: {total_articles * 50 / 60:.0f}-{total_articles * 70 / 60:.0f} 分钟")port random
 from pathlib import Path
 from datetime import datetime
 import logging
@@ -171,8 +174,8 @@ def production_batch_fix():
             print(f"\\n📊 批次完成: {i}/{total_articles}")
             print(f"📈 当前成功率: {success_count}/{i} = {success_count/i*100:.1f}%")
             
-            # 批次间更长延迟
-            batch_delay = random.uniform(60, 120)
+            # 批次间更长延迟 - 增强版
+            batch_delay = random.uniform(120, 240)
             print(f"⏳ 批次间休息 {batch_delay:.0f}s...")
             time.sleep(batch_delay)
     

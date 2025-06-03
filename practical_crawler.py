@@ -48,12 +48,12 @@ class PracticalCrawler:
         """智能延迟策略"""
         self.request_count += 1
         
-        # 基础延迟：15-30秒（生产环境设置）
-        base_delay = random.uniform(15, 30)
+        # 基础延迟：30-60秒（增强生产环境设置）
+        base_delay = random.uniform(30, 60)
         
-        # 每10个请求后增加额外延迟
+        # 每10个请求后增加额外延迟 - 增强版
         if self.request_count % 10 == 0:
-            extra_delay = random.uniform(60, 120)
+            extra_delay = random.uniform(120, 240)
             logger.info(f"第{self.request_count}个请求，额外等待 {extra_delay:.1f}s")
             time.sleep(extra_delay)
         

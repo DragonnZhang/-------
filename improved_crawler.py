@@ -48,7 +48,7 @@ class ImprovedArticleCrawler:
         
         # 请求计数器和延迟控制
         self.request_count = 0
-        self.max_requests_per_session = 50  # 每个会话最多请求数
+        self.max_requests_per_session = 20  # 每个会话最多请求数 - 减少以增加重置频率
         
     def setup_driver(self):
         """设置Chrome WebDriver with anti-detection"""
@@ -100,17 +100,17 @@ class ImprovedArticleCrawler:
             # 重新创建浏览器会话
             logger.info("达到最大请求数，重新创建浏览器会话")
             self.driver.quit()
-            time.sleep(random.uniform(30, 60))  # 长时间休息
+            time.sleep(random.uniform(120, 180))  # 长时间休息 2-3分钟
             self.setup_driver()
             self.request_count = 0
         
-        # 根据请求数量动态调整延迟
+        # 根据请求数量动态调整延迟 - 增强反爬虫延迟
         if self.request_count < 10:
-            delay = random.uniform(2, 5)
+            delay = random.uniform(15, 25)
         elif self.request_count < 25:
-            delay = random.uniform(5, 10)
+            delay = random.uniform(25, 40)
         else:
-            delay = random.uniform(10, 20)
+            delay = random.uniform(40, 60)
         
         logger.info(f"等待 {delay:.1f} 秒 (请求数: {self.request_count})")
         time.sleep(delay)
@@ -129,8 +129,8 @@ class ImprovedArticleCrawler:
                 # 访问页面
                 self.driver.get(url)
                 
-                # 等待页面加载
-                time.sleep(random.uniform(3, 6))
+                # 等待页面加载 - 增加延迟
+                time.sleep(random.uniform(8, 15))
                 
                 # 检查是否被重定向或返回错误页面
                 current_url = self.driver.current_url
@@ -143,7 +143,7 @@ class ImprovedArticleCrawler:
                     logger.warning(f"检测到错误页面标题: {page_title}")
                     if retry < max_retries - 1:
                         logger.info(f"等待更长时间后重试...")
-                        time.sleep(random.uniform(30, 60))
+                        time.sleep(random.uniform(60, 120))
                         continue
                 
                 # 获取页面HTML
@@ -154,7 +154,7 @@ class ImprovedArticleCrawler:
                     logger.warning("页面内容包含错误信息")
                     if retry < max_retries - 1:
                         logger.info("等待后重试...")
-                        time.sleep(random.uniform(20, 40))
+                        time.sleep(random.uniform(40, 80))
                         continue
                 
                 # 解析HTML
@@ -163,11 +163,11 @@ class ImprovedArticleCrawler:
             except TimeoutException:
                 logger.warning(f"页面加载超时 (尝试 {retry + 1}/{max_retries})")
                 if retry < max_retries - 1:
-                    time.sleep(random.uniform(15, 30))
+                    time.sleep(random.uniform(30, 60))
             except Exception as e:
                 logger.error(f"提取文章内容失败 (尝试 {retry + 1}/{max_retries}): {e}")
                 if retry < max_retries - 1:
-                    time.sleep(random.uniform(10, 20))
+                    time.sleep(random.uniform(20, 40))
         
         logger.error(f"所有重试都失败了: {url}")
         return None
